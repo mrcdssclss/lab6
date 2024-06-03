@@ -11,6 +11,7 @@ import java.util.Objects;
 public class Response implements Serializable {
     @Getter @Setter
     private String response = "";
+    private static final long serialVersionUID = 75758L;
     private City city;
 
     public Response(String response) {

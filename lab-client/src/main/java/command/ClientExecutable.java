@@ -1,4 +1,4 @@
-package com.mrcdssclss.common.util;
+package command;
 import java.io.IOException;
 
 public interface ClientExecutable {

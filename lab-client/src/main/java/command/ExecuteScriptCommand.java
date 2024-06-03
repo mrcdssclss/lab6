@@ -1,7 +1,6 @@
 package command;
 
 import com.mrcdssclss.common.util.ConsoleManager;
-import com.mrcdssclss.common.util.ClientCommand;
 
 
 public class ExecuteScriptCommand extends ClientCommand {

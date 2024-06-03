@@ -3,7 +3,6 @@ package com.mrcdssclss.server.command;
 
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
-import com.mrcdssclss.common.util.ServerCommand;
 import com.mrcdssclss.server.managers.CollectionManager;
 import java.util.Objects;
 

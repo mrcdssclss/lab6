@@ -3,7 +3,6 @@ package command;
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
 import com.mrcdssclss.common.classes.City;
-import com.mrcdssclss.common.util.ClientCommand;
 import com.mrcdssclss.common.util.ConsoleManager;
 import utility.Ask;
 import utility.Client;
@@ -39,15 +38,13 @@ public class AddCommand extends ClientCommand {
                     ask.askHuman()
             );
             Request request = new Request("add", city);
-            client.sendRequest(request);
-            Response response = client.getResponse();
-            console.println(response.getResponse());
+            client.sendRequestVoid(request);
             return true;
         } catch (IllegalArgumentException e) {
             console.printError("Использование аргумента '" + argument + "' в команде '" + getName() + "'");
         } catch (Ask.AskBreak e) {
             console.printError("Input interrupted.");
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             console.printError("Ошибка при отправке запроса или получении ответа: " + e.getMessage());
         }
         return false;

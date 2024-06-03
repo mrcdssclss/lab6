@@ -2,7 +2,9 @@ package com.mrcdssclss.server.managers;
 
 
 import com.mrcdssclss.common.classes.City;
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
@@ -14,22 +16,15 @@ import static java.lang.Math.max;
 
 
 public class CollectionManager {
-    @Getter
+    @Getter @Setter
     private static ArrayDeque<City> collection = new ArrayDeque<>();
-    @Getter
-    private java.util.Date lastInitTime;
     @Getter
     private LocalDateTime lastSaveTime;
 
     public CollectionManager(FileManager fileManager) {
-        this.lastInitTime = null;
         this.lastSaveTime = null;
     }
 
-    public void loadCollection(FileManager fileManager) {
-        collection = fileManager.readCollection();
-        lastInitTime = new Date();
-    }
 
     public City getById(int id) {
         for (City city : collection) {
@@ -39,8 +34,6 @@ public class CollectionManager {
         }
         return null;
     }
-
-
 
     public boolean isContain(City city) {
         if (city == null || getCollectionById(city.getId()) == null) return false;

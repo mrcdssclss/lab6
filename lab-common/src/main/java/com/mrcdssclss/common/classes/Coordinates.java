@@ -2,9 +2,12 @@ package com.mrcdssclss.common.classes;
 
 
 import lombok.*;
+
+import java.io.Serializable;
+
 @Getter
 
-public class Coordinates {
+public class Coordinates implements Serializable {
     @NonNull
     private float x; //Значение поля должно быть больше -874, Поле не может быть null
     private float y; //Значение поля должно быть больше -590

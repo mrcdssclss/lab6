@@ -1,40 +1,46 @@
-import com.mrcdssclss.common.util.CommandManager;
-import com.mrcdssclss.common.util.ConsoleManager;
-import com.mrcdssclss.server.Server;
-import com.mrcdssclss.server.command.*;
+import com.mrcdssclss.common.Request;
+import com.mrcdssclss.server.command.SaveCommand;
 import com.mrcdssclss.server.managers.CollectionManager;
 import com.mrcdssclss.server.managers.FileManager;
-import com.mrcdssclss.common.util.Runner;
+import com.mrcdssclss.server.managers.ServerCommandManager;
+import com.mrcdssclss.server.managers.ServerRunner;
+import com.mrcdssclss.server.Server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class ServerMain {
-    static int port = 8080;
-    static ConsoleManager console = new ConsoleManager();
+    static int port = 8082;
 
     public static void main(String[] args) {
-
         if (args == null || args.length == 0 || args[0].isEmpty()){
             System.err.println("ты что самый умный?? где норм файл??");
             System.exit(-1);
         }
-        FileManager fileManager = new FileManager(args[0], console);
+        FileManager fileManager = new FileManager(args[0]);
         CollectionManager collectionManager = new CollectionManager(fileManager);
+        fileManager.readCollection();
+        ServerCommandManager commandManager = new ServerCommandManager(collectionManager, fileManager);
+        ServerRunner runner = new ServerRunner(commandManager);
+        //реализация save
+        Thread consoleThread = new Thread(() -> {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+                String inputLine;
+                while ((inputLine = reader.readLine()) != null) {
+                    if ("save".equals(inputLine.trim())) {
+                        System.out.println("Выполнение команды сохранения");
+                        SaveCommand saveCommand = new SaveCommand(fileManager, collectionManager);
+                        System.out.println(saveCommand.execute(new Request(" ")).getResponse());
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Ошибка при чтении из консоли: " + e.getMessage());
+            }
+        });
+        consoleThread.start();
 
-        CommandManager commandManager = new CommandManager() {{
-            ServerRegistration("clear", new ClearCommand(collectionManager));
-            ServerRegistration("count_greater_than_meters_above_sea_level", new CountGreaterCommand());
-            ServerRegistration("filter_by_name", new FilterCommand());
-            ServerRegistration("min_By_Standard_Of_Living", new MinByCommand());
-            ServerRegistration("remove_greater", new RemoveGreaterCommand(collectionManager));
-            ServerRegistration("remove_head", new RemoveHeadCommand(collectionManager));
-            ServerRegistration("save", new SaveCommand(fileManager, collectionManager));
-            ServerRegistration("info", new InfoCommand(collectionManager));
-            ServerRegistration("show", new ShowCommand(collectionManager));
-            ServerRegistration("update_id", new UpdateIdCommand(collectionManager));
-        }};
-
-        Runner runner = new Runner(commandManager);
         try {
             Server server = new Server(port, runner);
             server.start();

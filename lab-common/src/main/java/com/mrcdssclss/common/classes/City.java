@@ -2,12 +2,14 @@ package com.mrcdssclss.common.classes;
 
 import com.mrcdssclss.common.util.Validatable;
 import lombok.Getter;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static java.lang.Math.max;
 
 
-public class City implements Validatable {
+public class City implements Validatable, Serializable {
     @Getter
     private Integer id;
     @Getter

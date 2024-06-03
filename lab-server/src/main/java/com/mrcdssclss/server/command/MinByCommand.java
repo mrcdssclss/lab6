@@ -6,7 +6,6 @@ import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
 import com.mrcdssclss.common.classes.City;
 import com.mrcdssclss.common.classes.StandardOfLiving;
-import com.mrcdssclss.common.util.ServerCommand;
 import com.mrcdssclss.server.managers.CollectionManager;
 
 
@@ -29,14 +28,14 @@ public class MinByCommand extends ServerCommand {
         boolean found = false;
         for (City el : city) {
             if (el.getStandardOfLiving() == StandardOfLiving.NIGHTMARE) {
-                System.out.println(el);
                 found = true;
+                return new Response(el.toString());
             }
         }
         if (!found) {
             System.out.println("Элемент с уровнем жизни NIGHTMARE не найден в коллекции");
         }
-        return new Response("команда выполнена успешно ");
+        return null;
     }
 
 }

@@ -2,7 +2,6 @@ package com.mrcdssclss.server.command;
 
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
-import com.mrcdssclss.common.util.ServerCommand;
 import com.mrcdssclss.server.managers.CollectionManager;
 
 public class InfoCommand extends ServerCommand {
@@ -17,9 +16,7 @@ public class InfoCommand extends ServerCommand {
         if (!request.getArgs().isEmpty()){
             request.printError("Данная команда не имеет аргументов");
         }
-        request.println("тип коллекции: " + collectionManager.collectionType()
-                + ", дата инициализации: " + collectionManager.getLastInitTime()
+        return new Response("тип коллекции: " + collectionManager.collectionType()
                 + ", размер: " + collectionManager.collectionSize());
-        return new Response("команда выполнена успешно ");
     }
 }

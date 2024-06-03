@@ -60,11 +60,5 @@
 			<artifactId>lab-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>com.mrcdssclss</groupId>
-            <artifactId>lab-server</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 </project>

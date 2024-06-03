@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class ServerMain {
-    static int port = 8082;
+    static int port = 8083;
 
     public static void main(String[] args) {
         if (args == null || args.length == 0 || args[0].isEmpty()){

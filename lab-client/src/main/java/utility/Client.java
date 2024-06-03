@@ -2,7 +2,6 @@ package utility;
 
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
-import com.mrcdssclss.server.managers.ServerCommandManager;
 
 
 import java.io.*;
@@ -37,6 +36,9 @@ public class Client {
             while (true) {
                 System.out.print("Введите команду: ");
                 String[] command = scanner.nextLine().split(" ");
+                if ("update_id".equals(command[0])){
+                    runner.getClientCommand(command);
+                }
                 if ("exit".equalsIgnoreCase(command[0])) {
                     System.out.println("Завершение работы клиента.");
                     break;

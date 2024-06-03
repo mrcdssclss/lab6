@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class ClientMain {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        int port = 8082;
+        int port = 8083;
         Scanner scanner = new Scanner(System.in);
         var console = new ConsoleManager();
         System.out.println("введите хост: ");
@@ -18,6 +18,7 @@ public class ClientMain {
         Client client = new Client(host, port);
         ClientCommandManager clientCommandManager = new ClientCommandManager() {{
             ClientRegistration("add", new AddCommand(console, client));
+            ClientRegistration("update_id", new UpdateIdCommand(console, client));
             ClientRegistration("execute_script", new ExecuteScriptCommand(console));
             ClientRegistration("help", new HelpCommand(console, this));
         }};

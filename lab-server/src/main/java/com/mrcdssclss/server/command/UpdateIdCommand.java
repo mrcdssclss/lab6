@@ -3,6 +3,7 @@ package com.mrcdssclss.server.command;
 
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
+import com.mrcdssclss.common.classes.City;
 import com.mrcdssclss.server.managers.CollectionManager;
 import java.util.Objects;
 
@@ -17,22 +18,19 @@ public class UpdateIdCommand extends ServerCommand {
 
     @Override
     public Response execute(Request request) {
-        if (request.getArgs().isBlank()) throw new IllegalArgumentException();
-        class NoSuchId extends RuntimeException{
-
-        }
+        City city;
         try {
             int id = Integer.parseInt(request.getArgs().trim());
-            if (!collectionManager.isContain(request.getCity())) throw new NoSuchId();
-            if (Objects.isNull(request.getCity())){
+            city = collectionManager.getById(Integer.parseInt(request.getArgs()));
+            if (request.getArgs().isBlank()) return new Response("для команды нужны аргументы");
+            if (!collectionManager.isContain(city)) return new Response("такого элемента коллекции не существует");
+            if (Objects.isNull(collectionManager.getById(Integer.parseInt(request.getArgs())))){
                 return new Response("Для команды " + this.getName() + " требуется объект");
             }
             collectionManager.addById(id, request.getCity());
             return new Response("Объект успешно обновлен");
-        } catch (NoSuchId err) {
+        } catch (IllegalArgumentException err) {
             return new Response("В коллекции нет элемента с таким id");
-        } catch (NumberFormatException exception) {
-            return new Response("id должно быть числом типа int");
         }
     }
 }

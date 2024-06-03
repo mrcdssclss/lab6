@@ -7,13 +7,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ClientRunner {
     private final ClientCommandManager clientCommandManager;
-    ConsoleManager console;
+
     private final ArrayList<String> usedFileNames = new ArrayList<>();
 
     public ClientRunner(ClientCommandManager clientCommandManager) {

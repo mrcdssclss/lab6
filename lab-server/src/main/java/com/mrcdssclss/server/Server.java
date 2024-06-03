@@ -40,7 +40,8 @@ public class Server {
                         Request request = getRequest();
                         System.out.println(request.getMessage());
                         if (!request.isEmpty()) {
-                            if (!ServerCommandManager.getServerCommandMap().containsKey(request.getMessage())) {
+                            String command = (request.getMessage().split(" "))[0];
+                            if (!ServerCommandManager.getServerCommandMap().containsKey(command)) {
                                 sendResponse(new Response("такой команды не существует "));
                             }
                             if (!request.getMessage().equals("add")){

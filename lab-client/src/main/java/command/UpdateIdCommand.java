@@ -23,7 +23,7 @@ public class UpdateIdCommand extends ClientCommand {
         try {
             Ask ask = new Ask(console);
             City city = new City(
-                    ask.setId(),
+                    ask.getId(),
                     ask.askName(),
                     ask.askCoordinates(),
                     ask.askCreationDate(),
@@ -35,7 +35,7 @@ public class UpdateIdCommand extends ClientCommand {
                     ask.askStandardOfLiving(),
                     ask.askHuman()
             );
-            Request request = new Request("update_id"+argument, city);
+            Request request = new Request("update_id "+argument, city);
             client.sendRequest(request);
             return true;
         } catch (Ask.AskBreak e) {

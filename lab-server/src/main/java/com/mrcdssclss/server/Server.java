@@ -53,7 +53,7 @@ public class Server {
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
-                        throw new RuntimeException(e);
+                        System.err.println("клиент отключен");
                     }
                 }
             }

@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class ClientMain {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        int port = 8083;
+        int port = 8080;
         Scanner scanner = new Scanner(System.in);
         var console = new ConsoleManager();
         System.out.println("введите хост: ");

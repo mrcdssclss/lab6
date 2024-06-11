@@ -2,14 +2,13 @@ package com.mrcdssclss.server.managers;
 
 
 import com.mrcdssclss.common.classes.City;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
-import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.max;
@@ -27,12 +26,7 @@ public class CollectionManager {
 
 
     public City getById(int id) {
-        for (City city : collection) {
-            if (city.getId() == id) {
-                return city;
-            }
-        }
-        return null;
+        return collection.stream().filter(city -> city.getId() == id).findFirst().orElse(null);
     }
 
     public boolean isContain(City city) {

@@ -1,6 +1,7 @@
 package command;
 
 import com.mrcdssclss.common.Request;
+import com.mrcdssclss.common.Response;
 import com.mrcdssclss.common.classes.City;
 import com.mrcdssclss.common.util.ConsoleManager;
 import utility.Ask;
@@ -23,7 +24,6 @@ public class UpdateIdCommand extends ClientCommand {
         try {
             Ask ask = new Ask(console);
             City city = new City(
-                    ask.getId(),
                     ask.askName(),
                     ask.askCoordinates(),
                     ask.askCreationDate(),
@@ -36,7 +36,8 @@ public class UpdateIdCommand extends ClientCommand {
                     ask.askHuman()
             );
             Request request = new Request("update_id "+argument, city);
-            client.sendRequest(request);
+            Response response = client.sendRequest(request);
+            System.out.println(response);
             return true;
         } catch (Ask.AskBreak e) {
             console.printError("Input interrupted.");

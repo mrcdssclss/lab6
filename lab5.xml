@@ -31,4 +31,20 @@
     <standardOfLiving>HIGH</standardOfLiving>
     <governor>2</governor>
   </city>
+  <city>
+    <id>3</id>
+    <name>d</name>
+    <coordinates>
+      <x>3.0</x>
+      <y>3.0</y>
+    </coordinates>
+    <creationDate>2024-06-11T22:49:28.623394</creationDate>
+    <area>3</area>
+    <population>3</population>
+    <metersAboveSeaLevel>3.0</metersAboveSeaLevel>
+    <carCode>3</carCode>
+    <government>KRITARCHY</government>
+    <standardOfLiving>LOW</standardOfLiving>
+    <governor>3</governor>
+  </city>
 </Array>

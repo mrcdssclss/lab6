@@ -34,8 +34,8 @@ public class Server {
         while(true) {
         socketChannel = serverSocketChannel.accept();
         if(socketChannel != null) {
+            System.out.println("Подключен новый клиент: " + socketChannel.getRemoteAddress());
             while (true) {
-                System.out.println("Подключен новый клиент: " + socketChannel.getRemoteAddress());
                     try {
                         Request request = getRequest();
                         System.out.println(request.getMessage());
@@ -44,11 +44,8 @@ public class Server {
                             if (!ServerCommandManager.getServerCommandMap().containsKey(command)) {
                                 sendResponse(new Response("такой команды не существует "));
                             }
-                            if (!request.getMessage().equals("add")){
-                                Response response = runner.getServerCommand(request);
-                                sendResponse(response);
-                            }
-                            runner.getServerCommand(request);
+                            Response response = runner.getServerCommand(request);
+                            sendResponse(response);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

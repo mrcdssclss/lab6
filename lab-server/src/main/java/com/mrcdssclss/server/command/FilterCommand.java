@@ -15,7 +15,6 @@ public class FilterCommand extends ServerCommand {
     }
     @Override
     public Response execute(Request request) {
-        String r;
         try {
             if (request.getArgs().isEmpty()) throw new IllegalArgumentException();
             var name = filterByName(request.getArgs());

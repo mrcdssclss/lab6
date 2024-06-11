@@ -25,7 +25,6 @@ public class AddCommand extends ClientCommand {
             if (!argument.isEmpty()) throw new IllegalArgumentException();
             Ask ask = new Ask(console);
             City city = new City(
-                    ask.setId(),
                     ask.askName(),
                     ask.askCoordinates(),
                     ask.askCreationDate(),
@@ -38,7 +37,8 @@ public class AddCommand extends ClientCommand {
                     ask.askHuman()
             );
             Request request = new Request("add", city);
-            client.sendRequestVoid(request);
+            Response response = client.sendRequest(request);
+            System.out.println(response);
             return true;
         } catch (IllegalArgumentException e) {
             console.printError("Использование аргумента '" + argument + "' в команде '" + getName() + "'");
@@ -46,6 +46,8 @@ public class AddCommand extends ClientCommand {
             console.printError("Input interrupted.");
         } catch (IOException e) {
             console.printError("Ошибка при отправке запроса или получении ответа: " + e.getMessage());
+        } catch (ClassNotFoundException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }

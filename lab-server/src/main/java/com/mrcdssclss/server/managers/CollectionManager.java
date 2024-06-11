@@ -7,8 +7,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
+import java.util.Iterator;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.max;
@@ -18,50 +18,45 @@ public class CollectionManager {
     @Getter @Setter
     private static ArrayDeque<City> collection = new ArrayDeque<>();
     @Getter
-    private LocalDateTime lastSaveTime;
+    private static LocalDateTime lastSaveTime;
 
     public CollectionManager(FileManager fileManager) {
         this.lastSaveTime = null;
     }
 
 
-    public City getById(int id) {
+    public static City getById(int id) {
         return collection.stream().filter(city -> city.getId() == id).findFirst().orElse(null);
     }
 
-    public boolean isContain(City city) {
-        if (city == null || getCollectionById(city.getId()) == null) return false;
-        return collection.contains(city);
+    public static void addById(Integer id, City city){
+        if (!isEmpty() && !collection.contains(city) && getCollectionById(id) != null){
+            remove(id);
+            city.setId(id);
+            collection.addLast(city);
+        }
     }
 
-    public static void add(City city) {
-        collection.add(city);
+    public static void add(City city) { collection.add(city);}
+
+    public static void remove(int id) {
+        Iterator<City> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            City currentCity = iterator.next();
+            if (currentCity.getId() == id) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
-    public boolean addById(Integer id, City city){
-        if (!isEmpty()){
-            if(isContain(city)) {return false;}
-            if (getCollectionById(id) != null) {return false;}}
-        city.setId(id);
-        collection.addLast(city);
-        return true;
-    }
-
-
-    public void remove(int id) {
-        var a = getById(id);
-        if (a == null) return;
-        collection.remove(a);
-    }
-
-    public void clear(){
+    public static void clear(){
         collection.clear();
     }
 
-    public boolean saveCollection(FileManager fileManager) {
+    public static void saveCollection(FileManager fileManager) {
         fileManager.writeCollection(collection);
         lastSaveTime = LocalDateTime.now();
-        return true;
     }
 
     @Override
@@ -73,23 +68,23 @@ public class CollectionManager {
         }
         return info.toString().trim();
     }
-    public String collectionType(){
+    public static String collectionType(){
         return collection.getClass().getName();
     }
-    public int collectionSize(){
+    public static int collectionSize(){
         return collection.size();
     }
 
-    public void removeFirst(){ collection.pollFirst(); }
+    public static void removeFirst(){ collection.pollFirst(); }
 
-    public String collectionToString(){
+    public static String collectionToString(){
         return collection.stream().map(Objects::toString).map(str -> str + "\n").collect(Collectors.joining());
     }
 
-    public boolean isEmpty(){
+    public static boolean isEmpty(){
         return collection.isEmpty();
     }
-    public ArrayDeque<City> getCollectionById(Integer id){
+    public static ArrayDeque<City> getCollectionById(Integer id){
         if (isEmpty()) return null;
         for (City el: collection){
             if (el.getId().equals(id)) return collection;

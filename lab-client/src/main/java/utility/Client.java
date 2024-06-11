@@ -87,26 +87,13 @@ public class Client {
         return getResponse();
     }
 
-    public void sendRequestVoid(Request request) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-            oos.writeObject(request);
-        }
-        buffer.clear();
-        buffer.put(baos.toByteArray());
-        buffer.flip();
-        while (buffer.hasRemaining()) {
-            socketChannel.write(buffer);
-        }
-        System.out.println("Отправлен запрос: " + request.getMessage());
-    }
 
     public Response getResponse() throws IOException, ClassNotFoundException, InterruptedException {
         int bytesRead = 0;
         if (!socketChannel.isOpen()) {
             throw new IOException("Соединение закрыто");
         }
-        buffer = ByteBuffer.allocate(1024);
+        buffer = ByteBuffer.allocate(5000);
         while (bytesRead <=0){
             bytesRead = socketChannel.read(buffer);
         }

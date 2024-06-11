@@ -9,11 +9,9 @@ import com.mrcdssclss.server.managers.CollectionManager;
 
 
 public class RemoveGreaterCommand extends ServerCommand {
-    private final CollectionManager collectionManager;
 
     public RemoveGreaterCommand(CollectionManager collectionManager) {
         super("remove_greater", " удалить из коллекции все элементы, большие, чем заданный");
-        this.collectionManager = collectionManager;
     }
     public Response execute(Request request) {
         int id = 0;
@@ -25,7 +23,7 @@ public class RemoveGreaterCommand extends ServerCommand {
         }
         for (City el : city){
             if (el.getId() > id){
-                collectionManager.remove(el.getId());
+                CollectionManager.remove(el.getId());
             }
         }
         return new Response("команда выполнена успешно ");

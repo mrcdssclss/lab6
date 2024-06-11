@@ -5,11 +5,9 @@ import com.mrcdssclss.common.Response;
 import com.mrcdssclss.server.managers.CollectionManager;
 
 public class ShowCommand extends ServerCommand {
-    private final CollectionManager collectionManager;
 
     public ShowCommand(CollectionManager collectionManager) {
         super("show", "вывести в стандартный поток вывода все элементы коллекции");
-        this.collectionManager = collectionManager;
     }
 
     @Override
@@ -17,6 +15,6 @@ public class ShowCommand extends ServerCommand {
         if (request.getArgs() != null && !request.getArgs().isEmpty()){
             return new Response("Данная команда не имеет аргументов");
         }
-        return new Response(collectionManager.collectionToString());
+        return new Response(CollectionManager.collectionToString());
     }
 }

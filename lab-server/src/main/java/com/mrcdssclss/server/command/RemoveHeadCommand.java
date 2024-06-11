@@ -6,18 +6,16 @@ import com.mrcdssclss.server.managers.CollectionManager;
 
 
 public class RemoveHeadCommand extends ServerCommand {
-    private final CollectionManager collectionManager;
 
     public RemoveHeadCommand(CollectionManager collectionManager) {
         super("remove_head", "удалить первый элемент из коллекции");
-        this.collectionManager = collectionManager;
     }
 
     @Override
     public Response execute(Request request) {
         try{
             if(!request.getArgs().isEmpty()) throw new IllegalArgumentException();
-            collectionManager.removeFirst();
+            CollectionManager.removeFirst();
             request.println("элемент был успешно удален");
             return new Response("команда выполнена успешно ");
         } catch (NumberFormatException e) {

@@ -14,20 +14,20 @@ public class City implements Validatable, Serializable {
     private Integer id;
     @Getter
     private String name;
-    private Coordinates coordinates;
-    private LocalDateTime creationDate;
-    private int area;
-    private Long population;
+    private final Coordinates coordinates;
+    private final LocalDateTime creationDate;
+    private final int area;
+    private final Long population;
     @Getter
     private double metersAboveSeaLevel;
-    private int carCode;
-    private Government government;
+    private final int carCode;
+    private final Government government;
     @Getter
     private StandardOfLiving standardOfLiving;
-    private Long governor;
-    private static Integer nextId = 1;
+    private final Long governor;
+    private static Integer nextId = 3;
 
-    public City(Integer id, String name, Coordinates coordinates, LocalDateTime creationDate, int area, Long population, double metersAboveSeaLevel,
+    public City(String name, Coordinates coordinates, LocalDateTime creationDate, int area, Long population, double metersAboveSeaLevel,
                 int carCode, Government government, StandardOfLiving standardOfLiving, long governor){
         this.id = nextId;
         nextId++;

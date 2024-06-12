@@ -18,11 +18,8 @@ public class UpdateIdCommand extends ServerCommand {
     public Response execute(Request request) {
         if (request.getArgs().isBlank()) return new Response("для команды нужны аргументы");
         if (request.getCity() == null) return new Response("объект пустой");
-        try {
-            CollectionManager.addById(Integer.valueOf(request.getArgs()), request.getCity());
-            return new Response("Объект успешно обновлен");
-        } catch (IllegalArgumentException err) {
-            return new Response("В коллекции нет элемента с таким id");
-        }
+        if (CollectionManager.getCollectionById(Integer.valueOf(request.getArgs())) == null) return new Response("коллекция пуста");
+        CollectionManager.addById(Integer.valueOf(request.getArgs()), request.getCity());
+        return new Response("Объект успешно обновлен");
     }
 }

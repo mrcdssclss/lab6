@@ -3,7 +3,6 @@ package utility;
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
 
-
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -41,24 +40,24 @@ public class Client {
                     break;
                 }
                 if (clientCommandManager.getClientCommandMap().containsKey(command[0])) {
-                        runner.getClientCommand(command);
-                    } else {
-                        try {
-                            Response response;
-                            if (command.length == 2){
-                                response = sendRequest(new Request(command[0]+ " " +command[1]));
-                            }else {
-                                response = sendRequest(new Request(command[0]));
-                            }
-                            System.out.println("Получен ответ: " + response.getResponse());
-                        } catch (IOException | ClassNotFoundException e) {
-                            System.err.println("Ошибка при отправке запроса или получении ответа.");
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                    runner.getClientCommand(command);
+                } else {
+                    try {
+                        Response response;
+                        if (command.length == 2) {
+                            response = sendRequest(new Request(command[0] + " " + command[1]));
+                        } else {
+                            response = sendRequest(new Request(command[0]));
                         }
+                        System.out.println("Получен ответ: " + response);
+                    } catch (IOException | ClassNotFoundException e) {
+                        System.err.println("Ошибка при отправке запроса или получении ответа.");
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
                 }
+            }
         } finally {
             try {
                 scanner.close();
@@ -87,14 +86,13 @@ public class Client {
         return getResponse();
     }
 
-
     public Response getResponse() throws IOException, ClassNotFoundException, InterruptedException {
         int bytesRead = 0;
         if (!socketChannel.isOpen()) {
             throw new IOException("Соединение закрыто");
         }
         buffer = ByteBuffer.allocate(5000);
-        while (bytesRead <=0){
+        while (bytesRead <= 0) {
             bytesRead = socketChannel.read(buffer);
         }
         buffer.flip();

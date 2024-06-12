@@ -25,7 +25,7 @@ public class City implements Validatable, Serializable {
     @Getter
     private StandardOfLiving standardOfLiving;
     private final Long governor;
-    private static Integer nextId = 3;
+    private static Integer nextId = 1;
 
     public City(String name, Coordinates coordinates, LocalDateTime creationDate, int area, Long population, double metersAboveSeaLevel,
                 int carCode, Government government, StandardOfLiving standardOfLiving, long governor){
@@ -47,6 +47,11 @@ public class City implements Validatable, Serializable {
         this.id = id;
         nextId = max(nextId, id + 1);
     }
+
+    public static void resetId(){
+        nextId = 1;
+    }
+
     public boolean validate(){
         if (id == null || id <= 0) return false;
         if (name == null || name.isEmpty()) return false;

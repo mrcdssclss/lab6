@@ -14,13 +14,16 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Server {
 
     private final ServerSocketChannel serverSocketChannel;
     private final ByteBuffer buffer = ByteBuffer.allocate(5000);
-    private SocketChannel socketChannel;
     private final ServerRunner runner;
+    private final List<SocketChannel> clients = new ArrayList<>();
 
     public Server(int port, ServerRunner runner) throws IOException {
         this.serverSocketChannel = ServerSocketChannel.open();
@@ -31,55 +34,64 @@ public class Server {
 
     public void start() throws IOException {
         System.out.println("Сервер запущен и слушает на порту " + serverSocketChannel.socket().getLocalPort());
-        while(true) {
-        socketChannel = serverSocketChannel.accept();
-        if(socketChannel != null) {
-            System.out.println("Подключен новый клиент: " + socketChannel.getRemoteAddress());
-            while (true) {
-                    try {
-                        Request request = getRequest();
+        while (true) {
+            // Accept new clients
+            SocketChannel newClient = serverSocketChannel.accept();
+            if (newClient != null) {
+                newClient.configureBlocking(false);
+                clients.add(newClient);
+                System.out.println("Подключен новый клиент: " + newClient.getRemoteAddress());
+            }
+
+            Iterator<SocketChannel> iterator = clients.iterator();
+            while (iterator.hasNext()) {
+                SocketChannel client = iterator.next();
+                try {
+                    if (client.isConnected() && client.read(buffer) > 0) {
+                        buffer.flip();
+                        Request request = getRequest(buffer);
+                        buffer.clear();
                         System.out.println(request.getMessage());
                         if (!request.isEmpty()) {
                             String command = (request.getMessage().split(" "))[0];
                             if (!ServerCommandManager.getServerCommandMap().containsKey(command)) {
-                                sendResponse(new Response("такой команды не существует "));
+                                sendResponse(client, new Response("такой команды не существует "));
+                            } else {
+                                Response response = runner.getServerCommand(request);
+                                sendResponse(client, response);
                             }
-                            Response response = runner.getServerCommand(request);
-                            sendResponse(response);
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        System.err.println("клиент отключен");
+                    }
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    iterator.remove();
+                    try {
+                        client.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                 }
             }
         }
     }
 
-    public Request getRequest() throws IOException, ClassNotFoundException {
-        buffer.clear();
-        socketChannel.read(buffer);
-        buffer.flip();
+    public Request getRequest(ByteBuffer buffer) throws IOException, ClassNotFoundException {
         byte[] data = new byte[buffer.remaining()];
         buffer.get(data);
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
              ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream)) {
-            byteArrayInputStream.close();
-            objectInputStream.close();
             return (Request) objectInputStream.readObject();
         }
     }
 
-    public void sendResponse(Response response) throws IOException {
+    public void sendResponse(SocketChannel client, Response response) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(response);
         ByteBuffer buffer = ByteBuffer.wrap(byteArrayOutputStream.toByteArray());
         while (buffer.hasRemaining()) {
-            socketChannel.write(buffer);
+            client.write(buffer);
         }
         System.out.println("Ответ отправлен клиенту");
     }
-
 }

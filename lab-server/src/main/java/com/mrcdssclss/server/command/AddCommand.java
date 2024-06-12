@@ -15,12 +15,7 @@ public class AddCommand extends ServerCommand {
 
     @Override
     public Response execute(Request request) throws IOException {
-        ArrayDeque<City> collection = CollectionManager.getCollectionById(request.getCity().getId());
-        if (collection == null || collection.isEmpty()) {
-            CollectionManager.add(request.getCity());
-            return new Response("Объект успешно добавлен в коллекцию");
-        } else {
-            return new Response("Невозможно добавить объект в коллекцию, т.к. объект с таким ID уже существует");
-        }
+        CollectionManager.add(request.getCity());
+        return new Response("Объект успешно добавлен в коллекцию");
     }
 }

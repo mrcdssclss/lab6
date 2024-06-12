@@ -11,7 +11,9 @@ import java.util.Objects;
 public class Response implements Serializable {
     @Getter @Setter
     private String response = "";
+    private static final long serialVersionUID = 7L;
     private City city;
+    private Integer args;
 
     public Response(String response) {
          this.response = response;
@@ -32,6 +34,11 @@ public class Response implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(response, city);
+    }
+
+    @Override
+    public String toString() {
+        return response;
     }
 
 }

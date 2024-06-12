@@ -2,8 +2,6 @@ package utility;
 
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;
-import com.mrcdssclss.common.util.CommandManager;
-import com.mrcdssclss.common.util.Runner;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -13,9 +11,8 @@ import java.util.Scanner;
 
 public class Client {
     private final SocketChannel socketChannel;
-    private ByteBuffer buffer = ByteBuffer.allocate(1024);
+    private ByteBuffer buffer = ByteBuffer.allocate(5000);
     Scanner scanner = new Scanner(System.in);
-
 
     public Client(String host, int port) throws IOException {
         this.socketChannel = SocketChannel.open();
@@ -32,35 +29,39 @@ public class Client {
         System.out.println("Подключение к серверу " + host + " на порту " + port);
     }
 
-    public void start(CommandManager commandManager) {
-        Runner runner = new Runner(commandManager);
+    public void start(ClientCommandManager clientCommandManager) {
+        ClientRunner runner = new ClientRunner(clientCommandManager);
         try {
             while (true) {
                 System.out.print("Введите команду: ");
-                String command = scanner.nextLine();
-                if (commandManager.getServerCommandMap().containsKey(command) || commandManager.getClientCommandMap().containsKey(command)) {
-                    if ("exit".equalsIgnoreCase(command)) {
-                        System.out.println("Завершение работы клиента.");
-                        break;
-                    }
-                    if (commandManager.getClientCommandMap().containsKey(command)) {
-                        runner.getClientCommand(command);
-                    } else {
-                        try {
-                            sendRequest(new Request(command));
-                            Response response = getResponse();
-                            System.out.println("Получен ответ: " + response);
-                        } catch (IOException | ClassNotFoundException e) {
-                            System.err.println("Ошибка при отправке запроса или получении ответа.");
-                            e.printStackTrace();
+                String[] command = scanner.nextLine().split(" ");
+                if ("exit".equalsIgnoreCase(command[0])) {
+                    System.out.println("Завершение работы клиента.");
+                    break;
+                }
+                if (clientCommandManager.getClientCommandMap().containsKey(command[0])) {
+                    runner.getClientCommand(command);
+                } else {
+                    try {
+                        Response response;
+                        if (command.length == 2) {
+                            response = sendRequest(new Request(command[0] + " " + command[1]));
+                        } else {
+                            response = sendRequest(new Request(command[0]));
                         }
+                        System.out.println("Получен ответ: " + response);
+                    } catch (IOException | ClassNotFoundException e) {
+                        System.err.println("Ошибка при отправке запроса или получении ответа.");
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
         } finally {
             try {
                 scanner.close();
-                if (socketChannel!= null && socketChannel.isOpen()) {
+                if (socketChannel != null && socketChannel.isOpen()) {
                     socketChannel.close();
                 }
             } catch (IOException e) {
@@ -70,8 +71,7 @@ public class Client {
         }
     }
 
-
-    public void sendRequest(Request request) throws IOException {
+    public Response sendRequest(Request request) throws IOException, ClassNotFoundException, InterruptedException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(request);
@@ -83,27 +83,24 @@ public class Client {
             socketChannel.write(buffer);
         }
         System.out.println("Отправлен запрос: " + request.getMessage());
+        return getResponse();
     }
 
-    public Response getResponse() throws IOException, ClassNotFoundException {
+    public Response getResponse() throws IOException, ClassNotFoundException, InterruptedException {
+        int bytesRead = 0;
         if (!socketChannel.isOpen()) {
             throw new IOException("Соединение закрыто");
         }
-        buffer = ByteBuffer.allocate(1024);
-        int bytesRead = socketChannel.read(buffer);
-        if (bytesRead == -1) {
-            socketChannel.close();
-            throw new IOException("Сервер закрыл соединение");
+        buffer = ByteBuffer.allocate(5000);
+        while (bytesRead <= 0) {
+            bytesRead = socketChannel.read(buffer);
         }
-        if (bytesRead > 0) {
-            buffer.flip();
-            byte[] data = new byte[buffer.remaining()];
-            buffer.get(data);
-            ByteArrayInputStream bais = new ByteArrayInputStream(data);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            return (Response) ois.readObject();
-        } else {
-            throw new IOException("Отсутствуют данные для чтения от сервера");
-        }
+        buffer.flip();
+        byte[] data = new byte[buffer.remaining()];
+        buffer.get(data);
+        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        buffer.clear();
+        return (Response) ois.readObject();
     }
 }

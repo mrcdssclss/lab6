@@ -1,6 +1,7 @@
 package com.mrcdssclss.server.managers;
 
 
+import com.mrcdssclss.common.Response;
 import com.thoughtworks.xstream.*;
 import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -11,17 +12,14 @@ import com.mrcdssclss.common.util.ConsoleManager;
 
 import java.io.*;
 import java.util.ArrayDeque;
+import java.util.ResourceBundle;
 
 public class FileManager {
-
     private final String fileName;
-    private final ConsoleManager console;
     private final XStream xstream;
 
-    public FileManager(String fileName, ConsoleManager console) {
-        this.console = console;
+    public FileManager(String fileName) {
         this.fileName = fileName;
-
         this.xstream = new XStream(new DomDriver());
         this.xstream.alias("Array", ArrayDeque.class);
         this.xstream.alias("city", City.class);
@@ -38,22 +36,23 @@ public class FileManager {
         });
     }
 
-    public void writeCollection(ArrayDeque<City> collection) {
+    public Response writeCollection(ArrayDeque<City> collection) {
         if (!fileName.isEmpty()) {
             try {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
                     xstream.toXML(collection, writer);
-                    console.println("Коллекция сохранена в файле: " + fileName);
+                    return new Response("Коллекция сохранена в файле: " + fileName);
                 }
             } catch (IOException e) {
                 throw new RuntimeException("Ошибка при записи в файл", e);
             }
         } else {
-            console.printError("Имя файла пустое");
+            return new Response("Имя файла пустое");
         }
     }
 
-    public ArrayDeque<City> readCollection() {
+    public Response readCollection() {
+        ConsoleManager console = new ConsoleManager();
         ArrayDeque<City> collection = new ArrayDeque<>();
         if (!fileName.isEmpty()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -63,19 +62,19 @@ public class FileManager {
                         if (item instanceof City) {
                             collection.add((City) item);
                         } else {
-                            console.printError("Невозможно преобразовать элемент XML в объект City");
+                            return new Response("Невозможно преобразовать элемент XML в объект City");
                         }
                     }
                 } else {
-                    console.printError("Невозможно преобразовать XML в коллекцию");
+                    return new Response("Невозможно преобразовать XML в коллекцию");
                 }
             } catch (IOException | ConversionException e) {
-                console.printError("Ошибка при чтении файла: либо не считывается коллекция, либо файла нет");
-                System.exit(-1);
+                return new Response("Ошибка при чтении файла: либо не считывается коллекция, либо файла нет");
             }
         } else {
-            console.printError("Имя файла пустое");
+            return new Response("Имя файла пустое");
         }
-        return collection;
+        CollectionManager.setCollection(collection);
+        return new Response("файл прочитан успешно");
     }
 }

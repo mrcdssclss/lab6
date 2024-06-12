@@ -1,4 +1,4 @@
-package com.mrcdssclss.common.util;
+package com.mrcdssclss.server.command;
 
 import com.mrcdssclss.common.Request;
 import com.mrcdssclss.common.Response;

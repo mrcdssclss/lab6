@@ -1,8 +1,10 @@
 package com.mrcdssclss.common.classes;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import java.io.Serializable;
+
 @XStreamAlias("government")
-public enum Government {
+public enum Government implements Serializable {
     COMMUNISM,
     KRITARCHY,
     TOTALITARIANISM;

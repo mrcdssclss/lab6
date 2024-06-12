@@ -2,6 +2,7 @@ package com.mrcdssclss.common;
 
 import com.mrcdssclss.common.classes.City;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -25,6 +26,7 @@ public class Request implements Serializable {
         this.city = city;
         this.args = extractArgs(message); // Инициализация args при создании объекта
     }
+
 
     public void setMessage(String message) {
         this.message = message;

@@ -9,20 +9,19 @@ import utility.Client;
 
 import java.io.IOException;
 
-public class AddCommand extends ClientCommand {
+public class UpdateIdCommand extends ClientCommand {
+
     private final ConsoleManager console;
     private final Client client;
 
-    public AddCommand(ConsoleManager console, Client client) {
-        super("add {element}", "добавить новый элемент в коллекцию");
+    public UpdateIdCommand(ConsoleManager console, Client client) {
+        super("update_id ", "обновить элемент коллекции по id");
         this.client = client;
         this.console = console;
     }
 
-    @Override
     public boolean execute(String argument) {
         try {
-            if (!argument.isEmpty()) throw new IllegalArgumentException();
             Ask ask = new Ask(console);
             City city = new City(
                     ask.askName(),
@@ -36,12 +35,10 @@ public class AddCommand extends ClientCommand {
                     ask.askStandardOfLiving(),
                     ask.askHuman()
             );
-            Request request = new Request("add", city);
+            Request request = new Request("update_id "+argument, city);
             Response response = client.sendRequest(request);
             System.out.println(response);
             return true;
-        } catch (IllegalArgumentException e) {
-            console.printError("Использование аргумента '" + argument + "' в команде '" + getName() + "'");
         } catch (Ask.AskBreak e) {
             console.printError("Input interrupted.");
         } catch (IOException e) {

@@ -1,8 +1,10 @@
 package com.mrcdssclss.common.classes;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+import java.io.Serializable;
+
 @XStreamAlias("standardOfLiving")
-public enum StandardOfLiving {
+public enum StandardOfLiving implements Serializable {
     ULTRA_HIGH,
     HIGH,
     LOW,

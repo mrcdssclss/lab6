@@ -1,16 +1,15 @@
-package com.mrcdssclss.common.util;
+package com.mrcdssclss.server.command;
 
-import com.mrcdssclss.common.Request;
-import com.mrcdssclss.common.Response;
+
 import lombok.Getter;
 
 @Getter
-public abstract class ClientCommand implements ClientExecutable{
+public abstract class ServerCommand implements ServerExecutable {
 
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 
-    public ClientCommand(String name, String description){
+    public ServerCommand(String name, String description){
         this.name = name;
         this.description = description;
     }
@@ -19,7 +18,7 @@ public abstract class ClientCommand implements ClientExecutable{
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        ClientCommand command = (ClientCommand) obj;
+        ServerCommand command = (ServerCommand) obj;
         return name.equals(command.name) && description.equals(command.description);
     }
 
@@ -35,5 +34,4 @@ public abstract class ClientCommand implements ClientExecutable{
                 ", description='" + description + '\'' +
                 '}';
     }
-
 }
